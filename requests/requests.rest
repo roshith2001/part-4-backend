@@ -1,0 +1,16 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Mere Avaas Suno",
+    "author": "Roshith Krishna P",
+    "url": "www.mas.com",
+    "likes": 13
+}
+
+###
+GET http://localhost:3001/api/blogs
+
+###
+DELETE http://localhost:3001/api/blogs/649dc47babf23115bcc6c5f5
+
