@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
+const config = require('../utils/config')
 
 mongoose.set('strictQuery', false)
 
-const uri = process.env.MONGO_URI
+console.log(config)
+console.log('connecting to ',config.uri)
 
-console.log('connecting to ',uri)
-
-mongoose.connect(uri)
+mongoose.connect(config.uri)
 .then(result => console.log('Connected to Database Successfully'))
 .catch(error => console.log('Error Connecting to Database', error))
 

@@ -17,10 +17,14 @@ blogRouter.post('/', (req, res, next) => {
     .catch(error => next(error))
 })
 
-blogRouter.get('/', (req, res, next) => {
-    Blog.find({})
-        .then(result => res.status(201).json(result))
-        .catch(error => next(error))
+blogRouter.get('/', async(req, res, next) => {
+    const result = await Blog.find({})
+    try{
+        res.json(result)
+    }
+    catch(error){
+        next(error)
+    }    
 })
 
 blogRouter.delete('/:id', (req, res, next) => {
