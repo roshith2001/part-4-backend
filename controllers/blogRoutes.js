@@ -2,19 +2,27 @@ const blogRouter = require('express').Router()
 
 const Blog = require('../models/mongo')
 
-blogRouter.post('/', (req, res, next) => {
+blogRouter.post('/', async(req, res, next) => {
     const body = req.body
+
+    if(!body.url || !body.title){
+        return res.status(400).json({error: 'Missing Data'})
+    }
 
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
-        likes: body.likes
+        likes: body.likes || 0
     })
 
-    blog.save()
-    .then(result => res.status(201).json(result))
-    .catch(error => next(error))
+    const result = await blog.save()
+    try{
+        res.status(201).json(result)
+    }
+    catch(error){
+        next(error)
+    }
 })
 
 blogRouter.get('/', async(req, res, next) => {

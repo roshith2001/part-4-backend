@@ -2,39 +2,17 @@ const mongoose = require('mongoose')
 const Blog = require('../models/mongo')
 const supertest = require('supertest')
 const app = require('../app')
+const helper = require('./test_helper')
 
 const api = supertest(app)
-const blogs = [
-  {
-    "title": "June 13",
-    "author": "Roshith Krishna P",
-    "url": "www.google.com",
-    "likes": 4,
-    "id": "649dc47babf23115bcc6c5f4"
-  },
-  {
-    "title": "Harry Potter and the lost Charm",
-    "author": "J.K. Rowling",
-    "url": "www.harry.com",
-    "likes": 144,
-    "id": "649eaf016b5783a62e134c33"
-  },
-  {
-    "title": "Where Stars met Sun",
-    "author": "John Joseph",
-    "url": "www.wsms.com",
-    "likes": 52,
-    "id": "649eafc26b5783a62e134c35"
-  }
-]
 
 beforeEach(async() => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(blogs[0])
+  let blogObject = new Blog(helper.initialBlogs[0])
   await blogObject.save()
-  blogObject = new Blog(blogs[1])
+  blogObject = new Blog(helper.initialBlogs[1])
   await blogObject.save()
-  blogObject = new Blog(blogs[2])
+  blogObject = new Blog(helper.initialBlogs[2])
   await blogObject.save()
 })
 
@@ -54,7 +32,7 @@ test('check id to be defined', async() => {
   })
 })
 
-test.only('new blog detail is added to db', async() => {
+test('new blog detail is added to db', async() => {
   const newBlog = {
     "title": "Jupiter Mazha",
     "author": "Roshith Krishna P",
@@ -69,10 +47,44 @@ test.only('new blog detail is added to db', async() => {
   .expect(201)
   .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
-  const blogTitles = response.body.map(r => r.title)
-  expect(response.body).toHaveLength(blogs.length + 1)
+  const blogsAtEnd = await helper.blogsInDb()
+  console.log(blogsAtEnd)
+  const blogTitles = blogsAtEnd.map(r => r.title)
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
   expect(blogTitles).toContain('Jupiter Mazha')
+})
+
+test('Like is given in the new data', async() => {
+  const newBlogWithoutLikes = {
+    "title": "Jupiter Mazha",
+    "author": "Roshith Krishna P",
+    "url": "www.karikku.com",
+    "id": "649dc47adbf93115bcc6c5f4"
+  }
+
+  const response = await api
+  .post('/api/blogs')
+  .send(newBlogWithoutLikes)
+  .expect(201)
+  expect(response.body.likes).toBe(0)
+})
+
+
+test('Title and URL is not given in the new data', async() => {
+  const newBlogWithMissingData = {
+    "author": "Roshith Krishna P",
+    "likes": 98,
+    "id": "649dc47adbf93115bcc6c5f4"
+  }
+
+  const response = await api
+  .post('/api/blogs')
+  .send(newBlogWithMissingData)
+  .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  console.log(blogsAtEnd)
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 afterAll(async ()=> {
