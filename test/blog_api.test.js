@@ -38,11 +38,41 @@ beforeEach(async() => {
   await blogObject.save()
 })
 
-test.only('blogs are returned in json', async() => {
+test('blogs are returned in json', async() => {
   await api
   .get('/api/blogs') 
   .expect(200)
   .expect('Content-Type', /application\/json/) 
+})
+
+test('check id to be defined', async() => {
+  const response = await api.get('/api/blogs')
+  const body = response.body
+
+  body.forEach(blog => {
+    expect(blog.id).toBeDefined()
+  })
+})
+
+test.only('new blog detail is added to db', async() => {
+  const newBlog = {
+    "title": "Jupiter Mazha",
+    "author": "Roshith Krishna P",
+    "url": "www.karikku.com",
+    "likes": 94,
+    "id": "649dc47adbf93115bcc6c5f4"
+  }
+
+  await api
+  .post('/api/blogs')
+  .send(newBlog)
+  .expect(201)
+  .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const blogTitles = response.body.map(r => r.title)
+  expect(response.body).toHaveLength(blogs.length + 1)
+  expect(blogTitles).toContain('Jupiter Mazha')
 })
 
 afterAll(async ()=> {
