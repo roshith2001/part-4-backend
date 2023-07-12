@@ -87,6 +87,24 @@ test('Title and URL is not given in the new data', async() => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+describe('deleting a blog', () => {
+  test.only('deleting a note with valid id', async() => {
+    const blogFromDB = await helper.blogsInDb()
+    const blogToDelete = blogFromDB[0]
+    console.log(blogToDelete)
+    await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    console.log(blogsAtEnd)
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+    const content = blogsAtEnd.map(result => result.title)
+    expect(content).not.toContain(blogToDelete.title)
+  })
+})
+
 afterAll(async ()=> {
     await mongoose.connection.close()
 })

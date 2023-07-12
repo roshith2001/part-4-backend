@@ -4,22 +4,19 @@ const initialBlogs = [
       "title": "June 13",
       "author": "Roshith Krishna P",
       "url": "www.google.com",
-      "likes": 4,
-      "id": "649dc47babf23115bcc6c5f4"
+      "likes": 4
     },
     {
       "title": "Harry Potter and the lost Charm",
       "author": "J.K. Rowling",
       "url": "www.harry.com",
-      "likes": 144,
-      "id": "649eaf016b5783a62e134c33"
+      "likes": 144
     },
     {
       "title": "Where Stars met Sun",
       "author": "John Joseph",
       "url": "www.wsms.com",
-      "likes": 52,
-      "id": "649eafc26b5783a62e134c35"
+      "likes": 52
     }
   ]
 
