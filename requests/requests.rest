@@ -2,10 +2,11 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-    "title": "June 13",
-    "author": "Roshith Krishna P",
-    "url": "www.june13.com",
-    "likes": 113   
+    "title": "God go help someone.",
+    "author": "Musthu Karunan",
+    "url": "www.someonegod.com",
+    "likes": 54,
+    "id": "64b553b2cf142822477c37b8"   
 }
 
 ###
@@ -13,7 +14,7 @@ GET http://localhost:3001/api/blogs
 
 ###
 
-GET http://localhost:3001/api/blogs/6a06dd09325701604facd3d
+GET http://localhost:3001/api/blogs/649eafc26b5783a62e134c35
 
 ###
 PUT http://localhost:3001/api/blogs/649eafc26b5783a62e134c35

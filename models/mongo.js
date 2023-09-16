@@ -1,16 +1,4 @@
 const mongoose = require('mongoose')
-const config = require('../utils/config')
-
-mongoose.set('strictQuery', false)
-
-console.log(config)
-console.log('connecting to ',config.uri)
-
-mongoose.connect(config.uri)
-.then(result => console.log('Connected to Database Successfully'))
-.catch(error => console.log('Error Connecting to Database', error))
-
-mongoose.set('strictQuery', false)
 
 const blogScheme = new mongoose.Schema({
     title: {
@@ -19,7 +7,11 @@ const blogScheme = new mongoose.Schema({
     },
     author: String,
     url: String,
-    likes: Number
+    likes: Number,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
 })
 
 blogScheme.set('toJSON', {

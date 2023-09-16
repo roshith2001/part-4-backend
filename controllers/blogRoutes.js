@@ -1,9 +1,11 @@
 const blogRouter = require('express').Router()
 
 const Blog = require('../models/mongo')
+const User = require('../models/user')
 
 blogRouter.post('/', async(req, res, next) => {
     const body = req.body
+    const user = await User.findById(body.id)
 
     if(!body.url || !body.title){
         return res.status(400).json({error: 'Missing Data'})
@@ -13,10 +15,18 @@ blogRouter.post('/', async(req, res, next) => {
         title: body.title, 
         author: body.author,
         url: body.url,
-        likes: body.likes || 0
+        likes: body.likes || 0,
+        user: user.id
     })
 
     const result = await blog.save()
+    if (!user.blog) {
+        user.blog = [];
+    }
+      
+    user.blog = user.blog.concat(result._id);
+    console.log(user.blog);
+    await user.save()
     try{
         res.status(201).json(result)
     }
@@ -26,7 +36,7 @@ blogRouter.post('/', async(req, res, next) => {
 })
 
 blogRouter.get('/', async(req, res, next) => {
-    const result = await Blog.find({})
+    const result = await Blog.find({}).populate('user')
     try{
         res.json(result)
     }
@@ -43,9 +53,12 @@ blogRouter.get('/:id', async(req, res, next) => {
         }
     }
     catch(error){
-        console.log(error)
+        if (error.name === 'CastError') {
+            // Handle invalid ID error
+            return res.status(400).json({ error: 'Invalid ID' });
         next(error)
     }
+} 
 })
 
 blogRouter.put('/:id', async(req, res, next) => {
