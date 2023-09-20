@@ -1,5 +1,6 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QxIiwiaWQiOiI2NTBiNDQ3NWVlODBiY2FlZDk0YjFhZmUiLCJpYXQiOjE2OTUyMzg0MTh9.N2bLoGOpyzVEcSCYJmDB3J1RG-8B9oPnnfBqKii5iuE
 
 {
     "title": "God go help someone.",

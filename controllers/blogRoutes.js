@@ -3,9 +3,23 @@ const blogRouter = require('express').Router()
 const Blog = require('../models/mongo')
 const User = require('../models/user')
 
+const jwt = require('jsonwebtoken')
+
+const getTokenFrom = req => {
+    const authorization = req.get('authorization')
+    if(authorization && authorization.startsWith('Bearer')){
+        return authorization.replace('Bearer ', '')
+    }
+    return null
+}
+
 blogRouter.post('/', async(req, res, next) => {
     const body = req.body
-    const user = await User.findById(body.id)
+    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    if(!decodedToken.id){
+        return res.status(401).json({error: 'Invalid Token'})
+    }
+    const user = await User.findById(decodedToken.id)
 
     if(!body.url || !body.title){
         return res.status(400).json({error: 'Missing Data'})
