@@ -36,7 +36,7 @@ blogRouter.post('/', async(req, res, next) => {
 })
 
 blogRouter.get('/', async(req, res, next) => {
-    const result = await Blog.find({}).populate('user')
+    const result = await Blog.find({}).populate('user', {name: 1})
     try{
         res.json(result)
     }
